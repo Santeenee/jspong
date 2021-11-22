@@ -1,0 +1,31 @@
+*,
+*::before,
+*::after {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: sans-serif;
+}
+
+:focus {
+	outline: none;
+}
+
+body {
+	min-height: 100vh;
+	background: hsl(237, 74%, 11%);
+	color: white;
+}
+
+header {
+	background-color: transparent;
+	min-height: 2vh;
+}
+
+main {
+	position: relative;
+	margin: 0 1em;
+	min-height: 96vh;
+	border-bottom: 2px solid red;
+	border-top: 2px solid red;
+}

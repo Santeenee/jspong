@@ -1,0 +1,68 @@
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+:focus {
+  outline: none;
+}
+
+body {
+  min-height: 100vh;
+  background: #070931;
+  color: white;
+}
+
+header {
+  background-color: transparent;
+  min-height: 2vh;
+}
+
+main {
+  position: relative;
+  margin: 0 1em;
+  min-height: 96vh;
+  border-bottom: 2px solid red;
+  border-top: 2px solid red;
+}
+
+:root {
+  --player-height: 5rem;
+}
+
+.player,
+.pc {
+  display: inline-block;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1rem;
+  height: 5rem;
+}
+
+.player {
+  left: 0;
+  background-color: white;
+}
+
+.pc {
+  right: 0;
+  background-color: white;
+}
+
+.ball {
+  display: inline-block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 1rem;
+  height: 1rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background-color: #ff7300;
+}

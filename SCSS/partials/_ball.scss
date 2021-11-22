@@ -1,0 +1,18 @@
+@use 'variables' as *;
+
+.ball {
+	display: inline-block;
+	position: absolute;
+
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+
+	width: 1rem;
+	height: 1rem;
+	aspect-ratio: 1;
+
+	border-radius: 50%;
+
+	background-color: hsl(27, 100%, 50%);
+}
