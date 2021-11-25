@@ -311,8 +311,29 @@ const controller = {
 const movePaddles = () => {
   Object.keys(controller).forEach(key => {
     if (controller[key].pressed) {
-      // controller[key].func
+      switch (key) {
+        case 'w':
+          movePaddleUp(player1)
+          break;
+        case 's':
+          movePaddleDown(player1)
+          break;
+        case 'ArrowUp':
+          movePaddleUp(player2)
+          break;
+        case 'ArrowDown':
+          movePaddleDown(player2)
+          break;
+
+        default:
+          console.log('we have a problem here')
+          break;
+      }
     }
+
+    // if (controller[key].pressed) {
+    //   // controller[key].func
+    // }
     // controller[key].pressed && controller[key].func()
     //Huston, we have a problem here
     //no idea how to use objects in JS
