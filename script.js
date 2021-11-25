@@ -88,12 +88,13 @@ const calculatePoints = async (side) => {
   //TODO gestire i punti in un oggetto... o array
 
   let pGameInfoText = pGameInfo.innerHTML
-  pGameInfo.style.background = 'green'
 
   if (side === 'right') {
+    pGameInfo.style.background = 'green'
     pGameInfo.innerHTML = 'Player1 wins'
   }
   else if (side === 'left') {
+    pGameInfo.style.background = 'hsl(20 100% 40%)'
     pGameInfo.innerHTML = 'Player2 wins'
   }
   else { console.log('something\'s wrong here') }
