@@ -6,7 +6,29 @@ const player2 = document.querySelector('.player2') //paddle2
 const ball = document.querySelector('.ball')
 const main = document.querySelector('main')
 
+const pGameInfo = document.querySelector('.game-info')
+const pcontrolsInfo = document.querySelector('.controls-info')
+
 var globalID
+var paddleVelocity = 7
+
+//original value should change along screen width
+var originalValue = 2.5 + (main.offsetWidth / main.offsetHeight)
+var commonValue = originalValue //* VELOCITY
+var incrementValue = 0.1
+
+// the higher the value the more vertical the angle becomes
+//bad english right there
+// 1 means default (45deg)
+var moreHorizontal = 1
+
+// this works only if one of the two values changes
+var moreVertical = 1
+
+pcontrolsInfo.style.color = 'white'
+setTimeout(() => {
+  pcontrolsInfo.style.color = 'hsl(0 100% 100% / 0.5)'
+}, 6000);
 
 /*
 ########     ###    ########  ########  ##       ######## 
@@ -37,10 +59,10 @@ const movePaddleUp = (paddle) => {
   //doesn't work if I press arrowDown next time
   paddle.style.bottom = 'auto'
 
-  if (valueTop <= 10) {
+  if (valueTop <= paddleVelocity) {
     paddle.style.top = 0
   } else {
-    valueTop -= 10
+    valueTop -= paddleVelocity
     paddle.style.top = `${valueTop}px`
   }
 }
@@ -54,39 +76,37 @@ const movePaddleDown = (paddle) => {
 
   paddle.style.top = 'auto'
 
-  if (valueBottom <= 10) {
+  if (valueBottom <= paddleVelocity) {
     paddle.style.bottom = 0
   } else {
-    valueBottom -= 10
+    valueBottom -= paddleVelocity
     paddle.style.bottom = `${valueBottom}px`
   }
 }
 
-//🤔
-// const playerMove = e => {
-//   const player2 = document.querySelector('.player2')
-//   switch (e.key) {
-//     case 'ArrowDown':
-//       arrowDownPressed(player2)
-//       break
+const calculatePoints = async (side) => {
+  //TODO gestire i punti in un oggetto... o array
 
-//     case 'ArrowUp':
-//       arrowUpPressed(player2)
-//       break
+  let pGameInfoText = pGameInfo.innerHTML
+  pGameInfo.style.background = 'green'
 
-//     default:
-//       if (!'w' && !'s')
-//         console.log(`wrong key pressed => "${e.key}"`)
-//       break
-//   }
-// }
+  if (side === 'right') {
+    pGameInfo.innerHTML = 'Player1 wins'
+  }
+  else if (side === 'left') {
+    pGameInfo.innerHTML = 'Player2 wins'
+  }
+  else { console.log('something\'s wrong here') }
 
-const stopBall = () => {
-  // console.log(globalID)
-  cancelAnimationFrame(globalID)
-  console.log('ball should stop now :(')
-  // console.log('animation frame canceled')
+  setTimeout(() => {
+    pGameInfo.style.background = 'transparent'
+    pGameInfo.innerHTML = pGameInfoText
+  }, 3000);
 }
+
+// const stopBall = () => {
+//   cancelAnimationFrame(globalID)
+// }
 
 const isPaddleThere = (side = 'left') => {
   let paddle
@@ -102,17 +122,34 @@ const isPaddleThere = (side = 'left') => {
   //check if paddle are there when G0ndor was having an heart attack.. wait what
   if (ballTopCheck + ball.offsetHeight >= paddleTopCheck &&
     ballTopCheck <= paddleTopCheck + paddle.offsetHeight) {
-    // console.log(`ball hitted ${side}`)
+    //* console.log(`ball hitted ${side}`)
+
+    //TODO change angle based on what part of the paddle the ball hits
+
+    return true
   } else {
-    // console.log(`ball missed ${side}`)
-    //stopBall please work
-    stopBall()
-    //* calculatePoints()
-    //* centerBall()
-    //* centerPaddles()
-    //* setTimeout(() => {      
-    //*   startBall()
-    //* }, 3000);
+
+    //* console.log(`ball missed ${side}`)
+
+    // stopBall() //stopBall doesn't work
+
+    calculatePoints(side)
+
+    centerBall()
+
+    centerPaddles()
+
+    //blocking code hehehehehehe ¯\_(ツ)_/¯
+    //theoretically it isn't blocking code
+    //but somehow with the returns "here and there" it works
+    //aka poor knowledge of JS
+    setTimeout(() => {
+      window.addEventListener('keydown', () => {
+        startBall()
+      }, { once: true })
+    }, 1000);
+
+    return false
   }
 }
 
@@ -153,18 +190,16 @@ const startBall = () => {
   let valueRightWithUnit = window.getComputedStyle(ball, null).getPropertyValue('right')
   let ballRight = parseInt(Number(valueRightWithUnit.replace(/[^0-9\.]+/g, "")))
 
-  var directions = [-1, -1]
+  //randomize initial direction
+  //if between min>0 and max -> Math.floor(Math.random() * (max - min + 1) + min);
+  let range = { min: 0, max: 1 }
+  let delta = range.max - range.min //+ 1
+  let rand1 = Math.round(Math.random() * delta)// + range.min
+  let rand2 = Math.round(Math.random() * delta)// + range.min
+  if (rand1 === 0) { rand1 = -1 }
+  if (rand2 === 0) { rand2 = -1 }
 
-  //it's everywhere... it's more or less the velocity of the ball?
-  var commonValue = 5
-
-  // the higher the value the more vertical the angle becomes
-  //bad english right there
-  // 1 means default (45deg)
-  var moreHorizontal = 1
-
-  // this works only if one of the two values changes
-  var moreVertical = 1
+  var directions = [rand1, rand2]
 
   ballTop += commonValue
   ball.style.top = directions[0] + 'px'
@@ -176,7 +211,7 @@ const startBall = () => {
   const animationStep = (timeStamp) => {
     // console.log(globalID)
 
-    //? doesn't work ಠ_ಠ ಠ﹏ಠ ಠ╭╮ಠ 눈_눈 (;´༎ຶД༎ຶ`) ㄒoㄒ 〒▽〒
+    //? It works temporarily
     movePaddles()
 
     //* it works
@@ -228,26 +263,41 @@ const startBall = () => {
     if (ballTop <= commonValue) {
       ball.style.top = commonValue
       directions = changeDirection('top', directions)
+      commonValue += incrementValue
     }
     else if (ballRight <= commonValue + paddleWidth) {
       ball.style.right = paddleWidth + commonValue
-      isPaddleThere('right')
       directions = changeDirection('right', directions)
+      let boolCheck = isPaddleThere('right')
+      if (!boolCheck) {
+        commonValue = originalValue
+        return //returns undefined...
+      }
+      commonValue += incrementValue
     }
     else if (ballLeft <= commonValue + paddleWidth) {
       ball.style.left = paddleWidth + commonValue
-      isPaddleThere('left')
       directions = changeDirection('left', directions)
+      let boolCheck = isPaddleThere('left')
+      if (!boolCheck) {
+        commonValue = originalValue
+        return  //returns undefined...
+      }
+      commonValue += incrementValue
     }
     else if (ballBottom <= commonValue) {
       ball.style.bottom = commonValue
       directions = changeDirection('bottom', directions)
+      commonValue += incrementValue
     }
 
-    ballTop += directions[0] * (commonValue / moreHorizontal)
+
+    console.log(directions[0] * (commonValue / moreHorizontal).toFixed(2))
+
+    ballTop += directions[0] * (commonValue / moreHorizontal).toFixed(2)
     ball.style.top = ballTop + 'px'
 
-    ballLeft += directions[1] * (commonValue / moreVertical)
+    ballLeft += directions[1] * (commonValue / moreVertical).toFixed(2)
     ball.style.left = ballLeft + 'px'
 
     valueBottomWithUnit = window.getComputedStyle(ball, null).getPropertyValue('bottom')
@@ -259,26 +309,24 @@ const startBall = () => {
     globalID = requestAnimationFrame(animationStep);
   }
 
-  function startAnimationStep() {
-    console.log('once')
-    globalID = requestAnimationFrame(animationStep)
-  }
+  globalID = requestAnimationFrame(animationStep)
+  // function startAnimationStep() {
+  // }
 
-  function once(fn, context) {
-    var result;
-    return function () {
-      if (fn) {
-        result = fn.apply(context || this, arguments);
-        fn = null;
-      }
-      return result;
-    };
-  }
+  // function once(fn, context) {
+  //   var result;
+  //   return function () {
+  //     if (fn) {
+  //       result = fn.apply(context || this, arguments);
+  //       fn = null;
+  //     }
+  //     return result;
+  //   };
+  // }
 
+  // var one_startAnimationStep = once(startAnimationStep)
 
-  var one_startAnimationStep = once(startAnimationStep)
-
-  one_startAnimationStep()
+  // one_startAnimationStep()
 }
 
 /*
@@ -302,10 +350,10 @@ const controller = {
   // 's': { pressed: false, func: movePaddleDown(player1) },
   // 'ArrowUp': { pressed: false, func: movePaddleUp(player2) },
   // 'ArrowDown': { pressed: false, func: movePaddleDown(player2) }
-  'w': { pressed: false, func: movePaddleUp(player1) },
-  's': { pressed: false, func: movePaddleDown(player1) },
-  'ArrowUp': { pressed: false, func: movePaddleUp(player2) },
-  'ArrowDown': { pressed: false, func: movePaddleDown(player2) }
+  'w': { pressed: false },
+  's': { pressed: false },
+  'ArrowUp': { pressed: false },
+  'ArrowDown': { pressed: false }
 }
 
 const movePaddles = () => {
@@ -357,14 +405,6 @@ document.addEventListener("keyup", (e) => {
 })
 
 //* window event listeners
-
-// const onLoadEvent = () => {
-//   // window.addEventListener('keydown', e => {
-//   //   player1Move(e)
-//   // })
-
-
-// }
 
 addEventListener('load', () => {
   addEventListener('keydown', e => {
