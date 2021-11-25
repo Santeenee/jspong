@@ -263,7 +263,6 @@ const startBall = () => {
     if (ballTop <= commonValue) {
       ball.style.top = commonValue
       directions = changeDirection('top', directions)
-      commonValue += incrementValue
     }
     else if (ballRight <= commonValue + paddleWidth) {
       ball.style.right = paddleWidth + commonValue
@@ -288,11 +287,9 @@ const startBall = () => {
     else if (ballBottom <= commonValue) {
       ball.style.bottom = commonValue
       directions = changeDirection('bottom', directions)
-      commonValue += incrementValue
     }
 
-
-    console.log(directions[0] * (commonValue / moreHorizontal).toFixed(2))
+    // console.log(directions[0] * (commonValue / moreHorizontal).toFixed(2))
 
     ballTop += directions[0] * (commonValue / moreHorizontal).toFixed(2)
     ball.style.top = ballTop + 'px'
