@@ -371,7 +371,11 @@ const movePaddles = () => {
           break;
 
         default:
-          console.log('we have a problem here')
+          //TODO make a div that shows on screen 
+          //TODO when someone hit the wrong key
+          //TODO too many times
+          //TODO press w or s or arrowup or arrowdown
+          console.log('wrong key')
           break;
       }
     }
@@ -389,7 +393,6 @@ document.addEventListener("keydown", (e) => {
   let key = e.key || String.fromCharCode(e.keyCode);
   if (controller[key]) {
     controller[key].pressed = true
-    // console.log('keydown and controller[key] true')
   }
 })
 
@@ -397,7 +400,6 @@ document.addEventListener("keyup", (e) => {
   let key = e.key || String.fromCharCode(e.keyCode);
   if (controller[key]) {
     controller[key].pressed = false
-    // console.log('keyup and controller[key] true')
   }
 })
 
