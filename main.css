@@ -34,8 +34,8 @@ main {
   --player-height: 5rem;
 }
 
-.player,
-.pc {
+.player1,
+.player2 {
   display: inline-block;
   position: absolute;
   top: 50%;
@@ -44,12 +44,12 @@ main {
   height: 5rem;
 }
 
-.player {
+.player1 {
   left: 0;
   background-color: white;
 }
 
-.pc {
+.player2 {
   right: 0;
   background-color: white;
 }
