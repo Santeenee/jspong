@@ -13,7 +13,7 @@ var globalID
 var paddleVelocity = 7
 
 //original value should change along screen width
-var originalValue = 2.5 + (main.offsetWidth / main.offsetHeight)
+var originalValue = parseInt(1 + (main.offsetWidth / 400 + main.offsetHeight / 300))
 var commonValue = originalValue //* VELOCITY
 var incrementValue = 0.1
 
@@ -84,6 +84,7 @@ const movePaddleDown = (paddle) => {
   }
 }
 
+//non-blocking code
 const calculatePoints = async (side) => {
   //TODO gestire i punti in un oggetto... o array
 
@@ -140,14 +141,9 @@ const isPaddleThere = (side = 'left') => {
 
     centerPaddles()
 
-    //blocking code hehehehehehe ¯\_(ツ)_/¯
-    //theoretically it isn't blocking code
-    //but somehow with the returns "here and there" it works
-    //aka poor knowledge of JS
     setTimeout(() => {
-      window.addEventListener('keydown', () => {
-        startBall()
-      }, { once: true })
+      window.addEventListener('keydown', () => startBall(),
+        { once: true })
     }, 1000);
 
     return false
@@ -197,8 +193,8 @@ const startBall = () => {
   let delta = range.max - range.min //+ 1
   let rand1 = Math.round(Math.random() * delta)// + range.min
   let rand2 = Math.round(Math.random() * delta)// + range.min
-  if (rand1 === 0) { rand1 = -1 }
-  if (rand2 === 0) { rand2 = -1 }
+  if (rand1 === 0) rand1 = -1
+  if (rand2 === 0) rand2 = -1
 
   var directions = [rand1, rand2]
 
