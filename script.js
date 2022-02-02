@@ -13,7 +13,9 @@ var globalID
 var paddleVelocity = 7
 
 //original value should change along screen width
-var originalValue = parseInt(1 + (main.offsetWidth / 400 + main.offsetHeight / 300))
+var originalValue = parseInt(
+	1 + (main.offsetWidth / 400 + main.offsetHeight / 300)
+)
 var commonValue = originalValue //* VELOCITY
 var incrementValue = 0.1
 
@@ -27,8 +29,8 @@ var moreVertical = 1
 
 pcontrolsInfo.style.color = 'white'
 setTimeout(() => {
-  pcontrolsInfo.style.color = 'hsl(0 100% 100% / 0.5)'
-}, 6000);
+	pcontrolsInfo.style.color = 'hsl(0 100% 100% / 0.5)'
+}, 6000)
 
 /*
 ########     ###    ########  ########  ##       ######## 
@@ -41,69 +43,70 @@ setTimeout(() => {
 */
 
 const centerPaddles = () => {
-  paddles.forEach(paddle => {
-    paddle.style.position = 'absolute'
-    let paddleTop = parseInt((main.offsetHeight / 2) - paddle.offsetHeight / 2)
-    paddle.style.top = paddleTop + 'px'
-    paddle.style.transform = 'translateY(0)'
-  });
+	paddles.forEach(paddle => {
+		paddle.style.position = 'absolute'
+		let paddleTop = parseInt(main.offsetHeight / 2 - paddle.offsetHeight / 2)
+		paddle.style.top = paddleTop + 'px'
+		paddle.style.transform = 'translateY(0)'
+	})
 }
 
 //⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆
-const movePaddleUp = (paddle) => {
+const movePaddleUp = paddle => {
+	//works only if there is no translate in the css
+	let valueTop = paddle.offsetTop
 
-  //works only if there is no translate in the css
-  let valueTop = paddle.offsetTop
+	//reset bottom property to auto otherwise getcomputedstyle bottom
+	//doesn't work if I press arrowDown next time
+	paddle.style.bottom = 'auto'
 
-  //reset bottom property to auto otherwise getcomputedstyle bottom
-  //doesn't work if I press arrowDown next time
-  paddle.style.bottom = 'auto'
-
-  if (valueTop <= paddleVelocity) {
-    paddle.style.top = 0
-  } else {
-    valueTop -= paddleVelocity
-    paddle.style.top = `${valueTop}px`
-  }
+	if (valueTop <= paddleVelocity) {
+		paddle.style.top = 0
+	} else {
+		valueTop -= paddleVelocity
+		paddle.style.top = `${valueTop}px`
+	}
 }
 
 //⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇
-const movePaddleDown = (paddle) => {
-  let valueBottom = window.getComputedStyle(paddle, null).getPropertyValue('bottom')
+const movePaddleDown = paddle => {
+	let valueBottom = window
+		.getComputedStyle(paddle, null)
+		.getPropertyValue('bottom')
 
-  //retrieve number with decimals: "450.73px" --> 450.73
-  valueBottom = parseInt(Number(valueBottom.replace(/[^0-9\.]+/g, "")))
+	//retrieve number with decimals: "450.73px" --> 450.73
+	valueBottom = parseInt(Number(valueBottom.replace(/[^0-9\.]+/g, '')))
 
-  paddle.style.top = 'auto'
+	paddle.style.top = 'auto'
 
-  if (valueBottom <= paddleVelocity) {
-    paddle.style.bottom = 0
-  } else {
-    valueBottom -= paddleVelocity
-    paddle.style.bottom = `${valueBottom}px`
-  }
+	if (valueBottom <= paddleVelocity) {
+		paddle.style.bottom = 0
+	} else {
+		valueBottom -= paddleVelocity
+		paddle.style.bottom = `${valueBottom}px`
+	}
 }
 
 //non-blocking code
-const calculatePoints = async (side) => {
-  //TODO gestire i punti in un oggetto... o array
+const calculatePoints = async side => {
+	//TODO gestire i punti in un oggetto... o array
 
-  let pGameInfoText = pGameInfo.innerHTML
+	let pGameInfoText = pGameInfo.innerHTML
 
-  if (side === 'right') {
-    pGameInfo.style.background = 'green'
-    pGameInfo.innerHTML = 'Player1 wins'
-  }
-  else if (side === 'left') {
-    pGameInfo.style.background = 'hsl(20 100% 40%)'
-    pGameInfo.innerHTML = 'Player2 wins'
-  }
-  else { console.log('something\'s wrong here') }
+	if (side === 'right') {
+		pGameInfo.style.background = 'green'
+		pGameInfo.innerHTML = 'Player1 wins'
+	} else if (side === 'left') {
+		pGameInfo.style.background = 'hsl(20 100% 40%)'
+		pGameInfo.innerHTML = 'Player2 wins'
+	} else {
+		console.log("something's wrong here")
+	}
 
-  setTimeout(() => {
-    pGameInfo.style.background = 'transparent'
-    pGameInfo.innerHTML = pGameInfoText
-  }, 3000);
+	setTimeout(() => {
+		pGameInfo.style.background = 'transparent'
+		pGameInfo.innerHTML = pGameInfoText
+	}, 3000)
 }
 
 // const stopBall = () => {
@@ -111,45 +114,48 @@ const calculatePoints = async (side) => {
 // }
 
 const isPaddleThere = (side = 'left') => {
-  let paddle
-  if (side === 'left') paddle = player1
-  else if (side === 'right') paddle = player2
+	let paddle
+	if (side === 'left') paddle = player1
+	else if (side === 'right') paddle = player2
 
-  let paddleTopCheck = parseInt(paddle.offsetTop)
-  let paddleBottomCheck = window.getComputedStyle(paddle, null).getPropertyValue('bottom')
-  paddleBottomCheck = parseInt(Number(paddleBottomCheck.replace(/[^0-9\.]+/g, "")))
-  let ballTopCheck = window.getComputedStyle(ball, null).getPropertyValue('top')
-  ballTopCheck = parseInt(Number(ballTopCheck.replace(/[^0-9\.]+/g, "")))
+	let paddleTopCheck = parseInt(paddle.offsetTop)
+	let paddleBottomCheck = window
+		.getComputedStyle(paddle, null)
+		.getPropertyValue('bottom')
+	paddleBottomCheck = parseInt(
+		Number(paddleBottomCheck.replace(/[^0-9\.]+/g, ''))
+	)
+	let ballTopCheck = window.getComputedStyle(ball, null).getPropertyValue('top')
+	ballTopCheck = parseInt(Number(ballTopCheck.replace(/[^0-9\.]+/g, '')))
 
-  //check if paddle are there when G0ndor was having an heart attack.. wait what
-  if (ballTopCheck + ball.offsetHeight >= paddleTopCheck &&
-    ballTopCheck <= paddleTopCheck + paddle.offsetHeight) {
-    //* console.log(`ball hitted ${side}`)
+	//check if paddle are there when G0ndor was having an heart attack.. wait what
+	if (
+		ballTopCheck + ball.offsetHeight >= paddleTopCheck &&
+		ballTopCheck <= paddleTopCheck + paddle.offsetHeight
+	) {
+		//* console.log(`ball hitted ${side}`)
 
-    //TODO change angle based on what part of the paddle the ball hits
+		//TODO change angle based on what part of the paddle the ball hits
 
-    return true
-  } else {
+		return true
+	} else {
+		//* console.log(`ball missed ${side}`)
 
-    //* console.log(`ball missed ${side}`)
+		// stopBall() //stopBall doesn't work
 
-    // stopBall() //stopBall doesn't work
+		calculatePoints(side)
 
-    calculatePoints(side)
+		centerBall()
 
-    centerBall()
+		centerPaddles()
 
-    centerPaddles()
+		setTimeout(() => {
+			window.addEventListener('keydown', () => startBall(), { once: true })
+		}, 1000)
 
-    setTimeout(() => {
-      window.addEventListener('keydown', () => startBall(),
-        { once: true })
-    }, 1000);
-
-    return false
-  }
+		return false
+	}
 }
-
 
 /*
  
@@ -164,163 +170,168 @@ const isPaddleThere = (side = 'left') => {
 */
 
 const centerBall = () => {
-  ball.style.position = 'absolute'
-  //centering the ball
-  let ballY = parseInt((main.offsetHeight / 2) - ball.offsetHeight / 2)
-  let ballX = parseInt((main.offsetWidth / 2) - ball.offsetWidth / 2)
-  ball.style.top = ballY + 'px'
-  ball.style.left = ballX + 'px'
-  ball.style.transform = 'translate(0, 0)'
+	ball.style.position = 'absolute'
+	//centering the ball
+	let ballY = parseInt(main.offsetHeight / 2 - ball.offsetHeight / 2)
+	let ballX = parseInt(main.offsetWidth / 2 - ball.offsetWidth / 2)
+	ball.style.top = ballY + 'px'
+	ball.style.left = ballX + 'px'
+	ball.style.transform = 'translate(0, 0)'
 }
 
 const startBall = () => {
-  let paddleWidth = player1.offsetWidth //both paddles have equal width
+	let paddleWidth = player1.offsetWidth //both paddles have equal width
 
-  let ballTop = parseInt(ball.offsetTop)
+	let ballTop = parseInt(ball.offsetTop)
 
-  let valueBottomWithUnit = window.getComputedStyle(ball, null).getPropertyValue('bottom')
-  let ballBottom = parseInt(Number(valueBottomWithUnit.replace(/[^0-9\.]+/g, "")))
+	let valueBottomWithUnit = window
+		.getComputedStyle(ball, null)
+		.getPropertyValue('bottom')
+	let ballBottom = parseInt(
+		Number(valueBottomWithUnit.replace(/[^0-9\.]+/g, ''))
+	)
 
-  let valueLeftWithUnit = window.getComputedStyle(ball, null).getPropertyValue('left')
-  let ballLeft = parseInt(Number(valueLeftWithUnit.replace(/[^0-9\.]+/g, "")))
+	let valueLeftWithUnit = window
+		.getComputedStyle(ball, null)
+		.getPropertyValue('left')
+	let ballLeft = parseInt(Number(valueLeftWithUnit.replace(/[^0-9\.]+/g, '')))
 
-  let valueRightWithUnit = window.getComputedStyle(ball, null).getPropertyValue('right')
-  let ballRight = parseInt(Number(valueRightWithUnit.replace(/[^0-9\.]+/g, "")))
+	let valueRightWithUnit = window
+		.getComputedStyle(ball, null)
+		.getPropertyValue('right')
+	let ballRight = parseInt(Number(valueRightWithUnit.replace(/[^0-9\.]+/g, '')))
 
-  //randomize initial direction
-  //if between min>0 and max -> Math.floor(Math.random() * (max - min + 1) + min);
-  let range = { min: 0, max: 1 }
-  let delta = range.max - range.min //+ 1
-  let rand1 = Math.round(Math.random() * delta)// + range.min
-  let rand2 = Math.round(Math.random() * delta)// + range.min
-  if (rand1 === 0) rand1 = -1
-  if (rand2 === 0) rand2 = -1
+	//randomize initial direction
+	//if between min>0 and max -> Math.floor(Math.random() * (max - min + 1) + min);
+	let range = { min: 0, max: 1 }
+	let delta = range.max - range.min //+ 1
+	let rand1 = Math.round(Math.random() * delta) // + range.min
+	let rand2 = Math.round(Math.random() * delta) // + range.min
+	if (rand1 === 0) rand1 = -1
+	if (rand2 === 0) rand2 = -1
 
-  var directions = [rand1, rand2]
+	var directions = [rand1, rand2]
 
-  ballTop += commonValue
-  ball.style.top = directions[0] + 'px'
-  ballLeft += commonValue
-  ball.style.left = directions[1] + 'px'
+	ballTop += commonValue
+	ball.style.top = directions[0] + 'px'
+	ballLeft += commonValue
+	ball.style.left = directions[1] + 'px'
 
-  //let's stop this animation once and for all
-  // see the MDN requestAnimationFrame example
-  const animationStep = (timeStamp) => {
-    // console.log(globalID)
+	//let's stop this animation once and for all
+	// see the MDN requestAnimationFrame example
+	const animationStep = timeStamp => {
+		// console.log(globalID)
 
-    //? It works temporarily
-    movePaddles()
+		//? It works temporarily
+		movePaddles()
 
-    //* it works
-    const changeDirection = (side = 'right', directions = [-1, 1]) => {
-      //
-      if (directions[0] > 0 && directions[1] > 0) {
-        if (side === 'bottom') {
-          return [-1, 1]
-        }
-        else if (side === 'right' /* && paddle.isThere */) {
-          return [1, -1]
-        } else {
-          console.log(directions[0], directions[1], side)
-        }
-      } else if (directions[0] > 0 && directions[1] < 0) {
-        if (side === 'bottom') {
-          return [-1, -1]
-        }
-        else if (side === 'left' /* && paddle.isThere */) {
-          return [1, 1]
-        } else {
-          console.log(directions[0], directions[1], side)
-        }
-      } else if (directions[0] < 0 && directions[1] > 0) {
-        if (side === 'top') {
-          return [1, 1]
-        }
-        else if (side === 'right' /* && paddle.isThere */) {
-          return [-1, -1]
-        } else {
-          console.log(directions[0], directions[1], side)
-        }
-      } else if (directions[0] < 0 && directions[1] < 0) {
-        if (side === 'top') {
-          return [1, -1]
-        }
-        else if (side === 'left' /* && paddle.isThere */) {
-          return [-1, 1]
-        } else {
-          console.log(directions[0], directions[1], side)
-        }
-      } else {
-        console.log('catastrofical error MWAHAHAHAA\nnah, it\'nothing')
-        return [-1, 1]
-      }
-    }
+		//* it works
+		const changeDirection = (side = 'right', directions = [-1, 1]) => {
+			//
+			if (directions[0] > 0 && directions[1] > 0) {
+				if (side === 'bottom') {
+					return [-1, 1]
+				} else if (side === 'right' /* && paddle.isThere */) {
+					return [1, -1]
+				} else {
+					console.log(directions[0], directions[1], side)
+				}
+			} else if (directions[0] > 0 && directions[1] < 0) {
+				if (side === 'bottom') {
+					return [-1, -1]
+				} else if (side === 'left' /* && paddle.isThere */) {
+					return [1, 1]
+				} else {
+					console.log(directions[0], directions[1], side)
+				}
+			} else if (directions[0] < 0 && directions[1] > 0) {
+				if (side === 'top') {
+					return [1, 1]
+				} else if (side === 'right' /* && paddle.isThere */) {
+					return [-1, -1]
+				} else {
+					console.log(directions[0], directions[1], side)
+				}
+			} else if (directions[0] < 0 && directions[1] < 0) {
+				if (side === 'top') {
+					return [1, -1]
+				} else if (side === 'left' /* && paddle.isThere */) {
+					return [-1, 1]
+				} else {
+					console.log(directions[0], directions[1], side)
+				}
+			} else {
+				console.log("catastrofical error MWAHAHAHAA\nnah, it'nothing")
+				return [-1, 1]
+			}
+		}
 
-    //ball must not go outside boundaries of <main>
-    if (ballTop <= commonValue) {
-      ball.style.top = commonValue
-      directions = changeDirection('top', directions)
-    }
-    else if (ballRight <= commonValue + paddleWidth) {
-      ball.style.right = paddleWidth + commonValue
-      directions = changeDirection('right', directions)
-      let boolCheck = isPaddleThere('right')
-      if (!boolCheck) {
-        commonValue = originalValue
-        return //returns undefined...
-      }
-      commonValue += incrementValue
-    }
-    else if (ballLeft <= commonValue + paddleWidth) {
-      ball.style.left = paddleWidth + commonValue
-      directions = changeDirection('left', directions)
-      let boolCheck = isPaddleThere('left')
-      if (!boolCheck) {
-        commonValue = originalValue
-        return  //returns undefined...
-      }
-      commonValue += incrementValue
-    }
-    else if (ballBottom <= commonValue) {
-      ball.style.bottom = commonValue
-      directions = changeDirection('bottom', directions)
-    }
+		//ball must not go outside boundaries of <main>
+		if (ballTop <= commonValue) {
+			ball.style.top = commonValue
+			directions = changeDirection('top', directions)
+		} else if (ballRight <= commonValue + paddleWidth) {
+			ball.style.right = paddleWidth + commonValue
+			directions = changeDirection('right', directions)
+			let boolCheck = isPaddleThere('right')
+			if (!boolCheck) {
+				commonValue = originalValue
+				return //returns undefined...
+			}
+			commonValue += incrementValue
+		} else if (ballLeft <= commonValue + paddleWidth) {
+			ball.style.left = paddleWidth + commonValue
+			directions = changeDirection('left', directions)
+			let boolCheck = isPaddleThere('left')
+			if (!boolCheck) {
+				commonValue = originalValue
+				return //returns undefined...
+			}
+			commonValue += incrementValue
+		} else if (ballBottom <= commonValue) {
+			ball.style.bottom = commonValue
+			directions = changeDirection('bottom', directions)
+		}
 
-    // console.log(directions[0] * (commonValue / moreHorizontal).toFixed(2))
+		// console.log(directions[0] * (commonValue / moreHorizontal).toFixed(2))
 
-    ballTop += directions[0] * (commonValue / moreHorizontal).toFixed(2)
-    ball.style.top = ballTop + 'px'
+		ballTop += directions[0] * (commonValue / moreHorizontal).toFixed(2)
+		ball.style.top = ballTop + 'px'
 
-    ballLeft += directions[1] * (commonValue / moreVertical).toFixed(2)
-    ball.style.left = ballLeft + 'px'
+		ballLeft += directions[1] * (commonValue / moreVertical).toFixed(2)
+		ball.style.left = ballLeft + 'px'
 
-    valueBottomWithUnit = window.getComputedStyle(ball, null).getPropertyValue('bottom')
-    ballBottom = parseInt(Number(valueBottomWithUnit.replace(/[^0-9\.]+/g, "")))
+		valueBottomWithUnit = window
+			.getComputedStyle(ball, null)
+			.getPropertyValue('bottom')
+		ballBottom = parseInt(Number(valueBottomWithUnit.replace(/[^0-9\.]+/g, '')))
 
-    valueRightWithUnit = window.getComputedStyle(ball, null).getPropertyValue('right')
-    ballRight = parseInt(Number(valueRightWithUnit.replace(/[^0-9\.]+/g, "")))
+		valueRightWithUnit = window
+			.getComputedStyle(ball, null)
+			.getPropertyValue('right')
+		ballRight = parseInt(Number(valueRightWithUnit.replace(/[^0-9\.]+/g, '')))
 
-    globalID = requestAnimationFrame(animationStep);
-  }
+		globalID = requestAnimationFrame(animationStep)
+	}
 
-  globalID = requestAnimationFrame(animationStep)
-  // function startAnimationStep() {
-  // }
+	globalID = requestAnimationFrame(animationStep)
+	// function startAnimationStep() {
+	// }
 
-  // function once(fn, context) {
-  //   var result;
-  //   return function () {
-  //     if (fn) {
-  //       result = fn.apply(context || this, arguments);
-  //       fn = null;
-  //     }
-  //     return result;
-  //   };
-  // }
+	// function once(fn, context) {
+	//   var result;
+	//   return function () {
+	//     if (fn) {
+	//       result = fn.apply(context || this, arguments);
+	//       fn = null;
+	//     }
+	//     return result;
+	//   };
+	// }
 
-  // var one_startAnimationStep = once(startAnimationStep)
+	// var one_startAnimationStep = once(startAnimationStep)
 
-  // one_startAnimationStep()
+	// one_startAnimationStep()
 }
 
 /*
@@ -335,85 +346,92 @@ const startBall = () => {
  
 */
 
-
 //*
 //* HANDLING SIMULTANEOUS KEY PRESSING
 //*
 const controller = {
-  // 'w': { pressed: false, func: movePaddleUp(player1) },
-  // 's': { pressed: false, func: movePaddleDown(player1) },
-  // 'ArrowUp': { pressed: false, func: movePaddleUp(player2) },
-  // 'ArrowDown': { pressed: false, func: movePaddleDown(player2) }
-  'w': { pressed: false },
-  's': { pressed: false },
-  'ArrowUp': { pressed: false },
-  'ArrowDown': { pressed: false }
+	// 'w': { pressed: false, func: movePaddleUp(player1) },
+	// 's': { pressed: false, func: movePaddleDown(player1) },
+	// 'ArrowUp': { pressed: false, func: movePaddleUp(player2) },
+	// 'ArrowDown': { pressed: false, func: movePaddleDown(player2) }
+	w: { pressed: false },
+	s: { pressed: false },
+	ArrowUp: { pressed: false },
+	ArrowDown: { pressed: false },
 }
 
 const movePaddles = () => {
-  Object.keys(controller).forEach(key => {
-    if (controller[key].pressed) {
-      switch (key) {
-        case 'w':
-          movePaddleUp(player1)
-          break;
-        case 's':
-          movePaddleDown(player1)
-          break;
-        case 'ArrowUp':
-          movePaddleUp(player2)
-          break;
-        case 'ArrowDown':
-          movePaddleDown(player2)
-          break;
+	Object.keys(controller).forEach(key => {
+		if (controller[key].pressed) {
+			switch (key) {
+				case 'w':
+					movePaddleUp(player1)
+					break
+				case 's':
+					movePaddleDown(player1)
+					break
+				case 'ArrowUp':
+					movePaddleUp(player2)
+					break
+				case 'ArrowDown':
+					movePaddleDown(player2)
+					break
 
-        default:
-          //TODO make a div that shows on screen 
-          //TODO when someone hit the wrong key
-          //TODO too many times
-          //TODO press w or s or arrowup or arrowdown
-          console.log('wrong key')
-          break;
-      }
-    }
+				default:
+					//TODO make a div that shows on screen
+					//TODO when someone hit the wrong key
+					//TODO too many times
+					//TODO press w or s or arrowup or arrowdown
+					console.log('wrong key')
+					break
+			}
+		}
 
-    // if (controller[key].pressed) {
-    //   // controller[key].func
-    // }
-    // controller[key].pressed && controller[key].func()
-    //Huston, we have a problem here
-    //no idea how to use objects in JS
-  })
+		// if (controller[key].pressed) {
+		//   // controller[key].func
+		// }
+		// controller[key].pressed && controller[key].func()
+		//Huston, we have a problem here
+		//no idea how to use objects in JS
+	})
 }
 
-document.addEventListener("keydown", (e) => {
-  let key = e.key || String.fromCharCode(e.keyCode);
-  if (controller[key]) {
-    controller[key].pressed = true
-  }
+document.addEventListener('keydown', e => {
+	let key = e.key || String.fromCharCode(e.keyCode)
+	if (controller[key]) {
+		controller[key].pressed = true
+	}
 })
 
-document.addEventListener("keyup", (e) => {
-  let key = e.key || String.fromCharCode(e.keyCode);
-  if (controller[key]) {
-    controller[key].pressed = false
-  }
+document.addEventListener('keyup', e => {
+	let key = e.key || String.fromCharCode(e.keyCode)
+	if (controller[key]) {
+		controller[key].pressed = false
+	}
 })
 
 //* window event listeners
 
 addEventListener('load', () => {
-  addEventListener('keydown', e => {
-    startBall()
-  }, { once: true })
+	addEventListener(
+		'keydown',
+		e => {
+			startBall()
+		},
+		{ once: true }
+	)
 })
 
-addEventListener('load', () => {
-  centerBall()
-  centerPaddles()
-}, { once: true })
+addEventListener(
+	'load',
+	() => {
+		centerBall()
+		centerPaddles()
+	},
+	{ once: true }
+)
 
 addEventListener('resize', () => {
-  centerBall()
-  centerPaddles()
+	centerBall()
+	centerPaddles()
 })
