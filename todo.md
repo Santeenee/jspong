@@ -2,6 +2,7 @@
 
 - [ ] adapt ball velocity to screen size and ratio
 - [ ] change ball direction (?)
+- [ ] divide code into js modules
 - [ ] use decimal conversion in every parseInt -> 
 
 `parseInt(value, radix) -> parseInt(var, 10)`
