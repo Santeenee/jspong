@@ -1,8 +1,8 @@
 # Todo list
 
-- adapt ball velocity to screen size and ratio
-- change ball direction
-- use decimal conversion in every parseInt -> 
+- [ ] adapt ball velocity to screen size and ratio
+- [ ] change ball direction (?)
+- [ ] use decimal conversion in every parseInt -> 
 
 `parseInt(value, radix) -> parseInt(var, 10)`
 
