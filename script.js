@@ -14,8 +14,9 @@ var paddleVelocity = 7
 
 //original value should change along screen width
 var originalValue = parseInt(1 + (main.offsetWidth / 400 + main.offsetHeight / 300))
+// var originalValue = parseInt(1 + (main.offsetWidth / 600 + main.offsetHeight / 500))
 var commonValue = originalValue //* VELOCITY
-var incrementValue = 0.1
+var incrementValue = 0.2
 
 // the higher the value the more vertical the angle becomes
 //bad english right there
@@ -116,17 +117,47 @@ const isPaddleThere = (side = 'left') => {
   else if (side === 'right') paddle = player2
 
   let paddleTopCheck = parseInt(paddle.offsetTop)
-  let paddleBottomCheck = window.getComputedStyle(paddle, null).getPropertyValue('bottom')
-  paddleBottomCheck = parseInt(Number(paddleBottomCheck.replace(/[^0-9\.]+/g, "")))
+  // let paddleBottomCheck = window.getComputedStyle(paddle, null).getPropertyValue('bottom')
+  // paddleBottomCheck = parseInt(Number(paddleBottomCheck.replace(/[^0-9\.]+/g, "")))
   let ballTopCheck = window.getComputedStyle(ball, null).getPropertyValue('top')
   ballTopCheck = parseInt(Number(ballTopCheck.replace(/[^0-9\.]+/g, "")))
 
   //check if paddle are there when G0ndor was having an heart attack.. wait what
-  if (ballTopCheck + ball.offsetHeight >= paddleTopCheck &&
-    ballTopCheck <= paddleTopCheck + paddle.offsetHeight) {
+  let underTheBall = ballTopCheck + ball.offsetHeight
+  let underThePaddle = paddleTopCheck + paddle.offsetHeight
+  let halfBall = ballTopCheck + ball.offsetHeight / 2
+
+  if (underTheBall >= paddleTopCheck && ballTopCheck <= underThePaddle) {
     //* console.log(`ball hitted ${side}`)
 
     //TODO change angle based on what part of the paddle the ball hits
+    if (underTheBall >= paddleTopCheck &&
+      halfBall <= paddleTopCheck + paddle.offsetHeight * (3 / 10)) {
+
+      // ball.style.background = 'white'
+      // ball.style.boxShadow = 'inset 0 0 0 3px red'
+      moreVertical = 1.2
+      moreHorizontal = 1
+
+    } else if (halfBall > paddleTopCheck + paddle.offsetHeight * (3 / 10) &&
+      halfBall <= paddleTopCheck + paddle.offsetHeight * (7 / 10)) {
+
+      // ball.style.background = 'orangered'
+      // ball.style.boxShadow = 'none'
+      moreVertical = 1
+      moreHorizontal = 1
+
+    } else if (halfBall > paddleTopCheck + paddle.offsetHeight * (7 / 10) &&
+      ballTopCheck <= paddleTopCheck + paddle.offsetHeight) {
+
+      // ball.style.background = 'green'
+      // ball.style.boxShadow = 'inset 0 0 0 3px blue'
+      moreVertical = 1.2
+      moreHorizontal = 1
+
+    } else {
+      console.log('collision calculations are wrong...')
+    }
 
     return true
   } else {
@@ -207,6 +238,7 @@ const startBall = () => {
   // see the MDN requestAnimationFrame example
   const animationStep = (timeStamp) => {
     // console.log(globalID)
+    console.log(commonValue)
 
     //? It works temporarily
     movePaddles()
@@ -288,10 +320,18 @@ const startBall = () => {
 
     // console.log(directions[0] * (commonValue / moreHorizontal).toFixed(2))
 
-    ballTop += directions[0] * (commonValue / moreHorizontal).toFixed(2)
+    try {
+      ballTop += directions[0] * (commonValue / moreHorizontal).toFixed(2)
+    } catch (error) {
+      alert(error)
+    }
     ball.style.top = ballTop + 'px'
 
-    ballLeft += directions[1] * (commonValue / moreVertical).toFixed(2)
+    try {
+      ballLeft += directions[1] * (commonValue / moreVertical).toFixed(2)
+    } catch (error) {
+      alert(error)
+    }
     ball.style.left = ballLeft + 'px'
 
     valueBottomWithUnit = window.getComputedStyle(ball, null).getPropertyValue('bottom')
@@ -368,11 +408,19 @@ const movePaddles = () => {
           break;
 
         default:
+          //*the default cant run in the first place...
           //TODO make a div that shows on screen 
           //TODO when someone hit the wrong key
           //TODO too many times
           //TODO press w or s or arrowup or arrowdown
           console.log('wrong key')
+          let divInMain = document.createElement('div')
+          divInMain = main.appendChild(divInMain)
+          divInMain.style.position = 'absolute'
+          divInMain.style.bottom = '0'
+          divInMain.style.padding = '1rem'
+          divInMain.style.background = 'red'
+          divInMain.innerHTML = 'Press <strong>W, S, ArrowUp, ArrowDown</strong> to move the paddles'
           break;
       }
     }
@@ -382,7 +430,7 @@ const movePaddles = () => {
     // }
     // controller[key].pressed && controller[key].func()
     //Huston, we have a problem here
-    //no idea how to use objects in JS
+    //no idea how to use objects/classes in JS
   })
 }
 
