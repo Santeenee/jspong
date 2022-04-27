@@ -28,7 +28,7 @@ var moreVertical = 1
 
 pcontrolsInfo.style.color = 'white'
 setTimeout(() => {
-  pcontrolsInfo.style.color = 'hsl(0 100% 100% / 0.5)'
+  pcontrolsInfo.style.filter = 'brightness(50%)'
 }, 6000)
 
 /*
@@ -419,7 +419,9 @@ const movePaddles = () => {
           break;
 
         default:
-          //*the default cant run in the first place...
+          //! the default cant run in the first place
+          //! because there is no other key in the 
+          //! controller object
           //TODO make a div that shows on screen 
           //TODO when someone hit the wrong key
           //TODO too many times
@@ -431,7 +433,7 @@ const movePaddles = () => {
           divInMain.style.bottom = '0'
           divInMain.style.padding = '1rem'
           divInMain.style.background = 'red'
-          divInMain.innerHTML = 'Press <strong>W, S, ArrowUp, ArrowDown</strong> to move the paddles'
+          divInMain.innerHTML = 'Press <kbd>W, S, ArrowUp, ArrowDown</kbd> to move the paddles'
           break;
       }
     }
